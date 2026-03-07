@@ -1,0 +1,89 @@
+services:
+  db:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    expose:
+      - 3306
+      - 33060
+  wordpress-cc-it-solutions:
+    image: wordpress:latest
+    volumes:
+      - wp_data:/var/www/html
+    ports:
+      - 80:80
+    restart: unless-stopped
+    environment:
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST_CC_IT}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+
+  db-portfolio:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - db_portfolio_data:/var/lib/mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    expose:
+      - 3306
+      - 33060
+
+  wordpress-charan-chander-portfolio:
+    image: wordpress:latest
+    volumes:
+      - wp_charanchander_portfolio_data:/var/www/html
+    ports:
+      - 81:80
+    restart: unless-stopped
+    environment:
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST_PORTFOLIO}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+  
+  portainer-agent:
+    image: portainer/agent:latest
+    container_name: portainer_websites_agent
+    restart: unless-stopped
+    ports:
+      - 9001:9001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+  
+  watchtower:
+    image: beatkind/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  cloudflare-tunnel-cc-it:
+    container_name: tunnel-cc-it
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ${CLOUDFLARE_TUNNEL_CC_IT}
+
+  cloudflare-tunnel-portfolio:
+    container_name: tunnel-portfolio
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ${CLOUDFLARE_TUNNEL_PORTFOLIO}
+
+volumes:
+  db_data:
+  wp_data:
+  db_portfolio_data:
+  wp_charanchander_portfolio_data:

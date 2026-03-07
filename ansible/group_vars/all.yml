@@ -1,0 +1,31 @@
+# group_vars/all.yml
+# Variables visible to all nodes
+---
+rhbase_automatic_updates: true
+
+docker_add_repo: true
+
+docker_obsolete_packages:
+  - docker
+  - docker.io
+  - docker-engine
+  - docker-doc
+  - podman-docker
+  - containerd
+  - runc
+
+docker_edition: 'ce'
+docker_packages:
+  - "docker-{{ docker_edition }}"
+  - "docker-{{ docker_edition }}-cli"
+  - "docker-{{ docker_edition }}-rootless-extras"
+docker_packages_state: latest
+
+docker_service_manage: true
+docker_service_state: started
+docker_service_enabled: true
+docker_restart_handler_state: restarted
+
+docker_install_compose_plugin: true
+docker_compose_package: docker-compose-plugin
+docker_compose_package_state: latest

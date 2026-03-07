@@ -1,0 +1,12 @@
+# ansible/requirements.yml
+---
+roles:
+  - name: bertvv.rh-base
+  - name: geerlingguy.docker
+  - name: nbigot.ansible-fail2ban
+
+collections:
+  - name: community.docker
+  - name: prometheus.prometheus
+  - name: grafana.grafana
+  - name: ansible.posix

@@ -1,0 +1,5 @@
+ansible/files/.env
+ansible/inventory.yml
+.DS_Store
+.vscode
+notes.md

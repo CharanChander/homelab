@@ -1,0 +1,85 @@
+# site.yml
+---
+- name: Configure rh-base on all hosts
+  hosts: all
+  roles:
+    - bertvv.rh-base
+
+- name: Update all packages
+  hosts: all
+  tasks:
+    - name: Update all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+
+- name: Install docker
+  hosts: all
+  roles:
+    - geerlingguy.docker
+
+- name: Copy docker compose file
+  hosts: all
+  tasks:
+    - name: Copy docker-compose.yml
+      ansible.builtin.copy:
+        src: "files/docker-compose-{{ inventory_hostname }}.yml"
+        dest: /home/bigchacha/docker-compose.yml
+        owner: bigchacha
+        group: bigchacha
+        mode: '0644'
+
+    - name: Copy .env file
+      ansible.builtin.copy:
+        src: files/.env
+        dest: /home/bigchacha/.env
+        mode: "0600"
+
+
+- name: Add user to docker group
+  hosts: all
+  become: true
+  tasks:
+    - name: Add bigchacha to docker group
+      ansible.builtin.user:
+        name: bigchacha
+        groups: docker
+        append: true
+
+- name: Increase UDP buffer
+  hosts: websites, monitoring
+  become: true
+  tasks:
+    - name: Set UDP buffer sizes for cloudflared
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+        sysctl_set: true
+      loop:
+        - name: net.core.rmem_max
+          value: "7340032"
+        - name: net.core.wmem_max
+          value: "7340032"
+
+
+- name: Execute docker compose
+  hosts: all
+  become: true
+  tasks:
+    - name: Check if Docker is running
+      ansible.builtin.service_facts:
+      register: service_state
+
+    - name: Verify Docker service is running
+      ansible.builtin.assert:
+        that:
+          - "'docker.service' in service_state.ansible_facts.services"
+          - "service_state.ansible_facts.services['docker.service'].state == 'running'"
+
+    - name: Execute docker-compose up
+      community.docker.docker_compose_v2:
+        project_src: /home/bigchacha
+        files:
+          - docker-compose.yml
