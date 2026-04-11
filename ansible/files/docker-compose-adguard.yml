@@ -5,15 +5,14 @@ services:
       - adguardhome_work:/opt/adguardhome/work
       - adguardhome_conf:/opt/adguardhome/conf
     ports:
-      - 53:53/tcp
       - 53:53/udp
       - 80:80/tcp
-      - 443:443/tcp
-      - 443:443/udp
       - 3000:3000/tcp
     environment:
       - TZ=Europe/Brussels
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   portainer-agent:
     image: portainer/agent:latest
@@ -24,12 +23,19 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
+    security_opt:
+      - no-new-privileges:true
 
   watchtower:
     image: beatkind/watchtower:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    environment:
+      - WATCHTOWER_SCHEDULE=0 0 3 * * *
+      - WATCHTOWER_CLEANUP=true
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
   adguardhome_work:

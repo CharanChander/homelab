@@ -23,6 +23,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  cloudflare-monitoring:
+    container_name: tunnel-monitoring
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ${CLOUDFLARE_TUNNEL_MONITORING}
+    security_opt:
+      - no-new-privileges:true
+
 volumes:
   uptime-kuma:
   data:
