@@ -1,5 +1,7 @@
-ansible/files/.env
-ansible/inventory.yml
+# Secrets – never commit real .env files
+ansible/files/.env.*
+!ansible/files/.env.*.example
+
+# OS
 .DS_Store
-.vscode
-notes.md
+*.swp

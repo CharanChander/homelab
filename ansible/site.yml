@@ -1,40 +1,46 @@
 # site.yml
 ---
-- name: Configure rh-base on all hosts
-  hosts: all
-  roles:
-    - bertvv.rh-base
-
 - name: Update all packages
   hosts: all
+  become: true
   tasks:
-    - name: Update all packages
-      ansible.builtin.dnf:
+    - name: Update apt cache and upgrade packages
+      ansible.builtin.apt:
         name: '*'
         state: latest
+        update_cache: true
 
-- name: Install docker
+- name: Install UFW and configure firewall
+  hosts: all
+  become: true
+  tasks:
+    - name: Install UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+
+    - name: Allow SSH
+      community.general.ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Allow host-specific ports
+      community.general.ufw:
+        rule: allow
+        port: "{{ item.split('/')[0] }}"
+        proto: "{{ item.split('/')[1] }}"
+      loop: "{{ ufw_allow_ports | default([]) }}"
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+
+- name: Install Docker
   hosts: all
   roles:
     - geerlingguy.docker
-
-- name: Copy docker compose file
-  hosts: all
-  tasks:
-    - name: Copy docker-compose.yml
-      ansible.builtin.copy:
-        src: "files/docker-compose-{{ inventory_hostname }}.yml"
-        dest: /home/bigchacha/docker-compose.yml
-        owner: bigchacha
-        group: bigchacha
-        mode: '0644'
-
-    - name: Copy .env file
-      ansible.builtin.copy:
-        src: files/.env
-        dest: /home/bigchacha/.env
-        mode: "0600"
-
 
 - name: Add user to docker group
   hosts: all
@@ -46,11 +52,11 @@
         groups: docker
         append: true
 
-- name: Increase UDP buffer
+- name: Increase UDP buffer for cloudflared
   hosts: websites, monitoring
   become: true
   tasks:
-    - name: Set UDP buffer sizes for cloudflared
+    - name: Set UDP buffer sizes
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
@@ -58,11 +64,47 @@
         reload: true
         sysctl_set: true
       loop:
-        - name: net.core.rmem_max
-          value: "7340032"
-        - name: net.core.wmem_max
-          value: "7340032"
+        - { name: net.core.rmem_max, value: "7340032" }
+        - { name: net.core.wmem_max, value: "7340032" }
 
+- name: Copy docker compose files and site assets
+  hosts: all
+  become: true
+  tasks:
+    - name: Copy docker-compose.yml
+      ansible.builtin.copy:
+        src: "files/docker-compose-{{ inventory_hostname }}.yml"
+        dest: /home/bigchacha/docker-compose.yml
+        owner: bigchacha
+        group: bigchacha
+        mode: '0644'
+
+    - name: Copy .env file (per host)
+      ansible.builtin.copy:
+        src: "files/.env.{{ inventory_hostname }}"
+        dest: /home/bigchacha/.env
+        owner: bigchacha
+        group: bigchacha
+        mode: '0600'
+
+    - name: Copy nginx config for cc-it (websites only)
+      ansible.builtin.copy:
+        src: files/nginx-cc-it.conf
+        dest: /home/bigchacha/nginx-cc-it.conf
+        owner: bigchacha
+        group: bigchacha
+        mode: '0644'
+      when: inventory_hostname == 'websites'
+
+    - name: Copy site files for websites host
+      ansible.builtin.copy:
+        src: "files/sites/"
+        dest: /home/bigchacha/sites/
+        owner: bigchacha
+        group: bigchacha
+        mode: '0644'
+        directory_mode: '0755'
+      when: inventory_hostname == 'websites'
 
 - name: Execute docker compose
   hosts: all
@@ -78,7 +120,7 @@
           - "'docker.service' in service_state.ansible_facts.services"
           - "service_state.ansible_facts.services['docker.service'].state == 'running'"
 
-    - name: Execute docker-compose up
+    - name: Execute docker compose up
       community.docker.docker_compose_v2:
         project_src: /home/bigchacha
         files:

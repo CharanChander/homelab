@@ -1,4 +1,6 @@
-rhbase_firewall_allow_ports:
+# host_vars/websites.yml
+ufw_allow_ports:
   - 443/tcp
   - 7844/udp
   - 7844/tcp
+  - 9001/tcp   # portainer agent

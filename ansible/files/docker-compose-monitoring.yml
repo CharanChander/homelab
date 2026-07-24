@@ -1,4 +1,6 @@
+# docker-compose-monitoring.yml
 services:
+
   uptime-kuma:
     image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
@@ -7,30 +9,48 @@ services:
       - 3001:3001
     volumes:
       - uptime-kuma:/app/data
-  
-  watchtower:
-    image: beatkind/watchtower:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    environment:
+      - TZ=Europe/Brussels
+    security_opt:
+      - no-new-privileges:true
 
   portainer:
     image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
     ports:
       - 9443:9443
     volumes:
-      - data:/data
+      - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Brussels
+    security_opt:
+      - no-new-privileges:true
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
     restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Brussels
+      - WATCHTOWER_SCHEDULE=0 0 3 * * *
+      - WATCHTOWER_CLEANUP=true
+    security_opt:
+      - no-new-privileges:true
 
   cloudflare-monitoring:
-    container_name: tunnel-monitoring
     image: cloudflare/cloudflared:latest
+    container_name: tunnel-monitoring
     restart: unless-stopped
     command: ${CLOUDFLARE_TUNNEL_MONITORING}
+    environment:
+      - TZ=Europe/Brussels
     security_opt:
       - no-new-privileges:true
 
 volumes:
   uptime-kuma:
-  data:
+  portainer_data:

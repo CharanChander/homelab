@@ -1,6 +1,7 @@
-rhbase_firewall_allow_ports:
+# host_vars/monitoring.yml
+ufw_allow_ports:
   - 443/tcp
   - 7844/udp
   - 7844/tcp
-  - 3001/tcp
-  - 9443/tcp
+  - 3001/tcp   # uptime-kuma
+  - 9443/tcp   # portainer
