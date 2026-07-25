@@ -20,7 +20,7 @@ if ($name === "" || $email === "" || $message === "" || !filter_var($email, FILT
 }
 
 // Cloudflare Turnstile verification
-$turnstileSecret   = getenv('TURNSTILE_SECRET');
+$turnstileSecret   = getenv('CLOUDFLARE_TURNSTILE_SECRET_KEY');
 $turnstileResponse = $_POST['cf-turnstile-response'] ?? '';
 
 if ($turnstileResponse === '') {
