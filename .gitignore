@@ -1,4 +1,4 @@
-ansible/files/*.env
+ansible/files/env
 ansible/inventory.yml
 .DS_Store
 .vscode

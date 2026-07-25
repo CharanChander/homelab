@@ -7,12 +7,12 @@ services:
     restart: unless-stopped
     env_file: .env
     healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost"]
-    interval: 30s
-    timeout: 5s
-    retries: 3
-    security_opt:
-      - no-new-privileges:true
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      security_opt:
+        - no-new-privileges:true
   
   portfolio:
     image: php:apache
@@ -22,12 +22,12 @@ services:
     restart: unless-stopped
     env_file: .env
     healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost"]
-    interval: 30s
-    timeout: 5s
-    retries: 3
-    security_opt:
-      - no-new-privileges:true
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      security_opt:
+        - no-new-privileges:true
 
   portainer-agent:
     image: portainer/agent:latest

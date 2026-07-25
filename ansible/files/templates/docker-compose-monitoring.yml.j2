@@ -6,12 +6,12 @@ services:
     volumes:
       - uptime-kuma:/app/data
     healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost"]
-    interval: 30s
-    timeout: 5s
-    retries: 3
-    security_opt:
-      - no-new-privileges:true
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      security_opt:
+        - no-new-privileges:true
   
   watchtower:
     image: beatkind/watchtower:latest
