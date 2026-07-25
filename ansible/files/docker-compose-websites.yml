@@ -1,30 +1,14 @@
 services:
-  db:
-    image: mariadb:latest
-    command: '--default-authentication-plugin=mysql_native_password'
+
+  cc-it-solutions:
+    image: php:apache
+    container_name: cc-it-solutions
     volumes:
-      - db_data:/var/lib/mysql
+      - ./cc-it-solutions:/var/www/html
     restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    expose:
-      - 3306
-      - 33060
-  wordpress-cc-it-solutions:
-    image: wordpress:latest
-    volumes:
-      - wp_data:/var/www/html
     ports:
-      - 80:80
-    restart: unless-stopped
-    environment:
-      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST_CC_IT}
-      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
-      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-      - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+      - "82:80"
+    env_file: .env
 
   db-portfolio:
     image: mariadb:latest
@@ -83,7 +67,5 @@ services:
     command: ${CLOUDFLARE_TUNNEL_PORTFOLIO}
 
 volumes:
-  db_data:
-  wp_data:
   db_portfolio_data:
   wp_charanchander_portfolio_data:
