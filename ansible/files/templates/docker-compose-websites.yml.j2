@@ -57,6 +57,8 @@ services:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
     command: ${CLOUDFLARE_TUNNEL_CC_IT}
+    security_opt:
+      - no-new-privileges:true
 
   cloudflare-tunnel-portfolio:
     container_name: tunnel-portfolio
