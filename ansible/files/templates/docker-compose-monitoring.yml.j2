@@ -3,8 +3,6 @@ services:
     image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
     restart: unless-stopped
-    ports:
-      - 3001:3001
     volumes:
       - uptime-kuma:/app/data
     healthcheck:
@@ -12,6 +10,8 @@ services:
     interval: 30s
     timeout: 5s
     retries: 3
+    security_opt:
+      - no-new-privileges:true
   
   watchtower:
     image: beatkind/watchtower:latest
@@ -27,11 +27,13 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     ports:
-      - 9443:9443
+      - "{{ ansible_default_ipv4.address }}:9443:9443"
     volumes:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   cloudflare-monitoring:
     container_name: tunnel-monitoring

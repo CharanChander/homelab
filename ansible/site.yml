@@ -22,8 +22,8 @@
   hosts: all
   tasks:
     - name: Copy docker-compose.yml
-      ansible.builtin.copy:
-        src: "files/docker-compose-{{ inventory_hostname }}.yml"
+      ansible.builtin.template:
+        src: "templates/docker-compose-{{ inventory_hostname }}.yml.j2"
         dest: /home/bigchacha/docker-compose.yml
         owner: bigchacha
         group: bigchacha
