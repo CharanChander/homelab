@@ -3,7 +3,7 @@ services:
     image: php:apache
     container_name: cc-it-solutions
     volumes:
-      - ./cc-it-solutions:/var/www/html
+      - /home/bigchacha/cc-it-solutions:/var/www/html
     restart: unless-stopped
     env_file: .env
     healthcheck:
@@ -18,7 +18,7 @@ services:
     image: php:apache
     container_name: portfolio
     volumes:
-      - ./portfolio:/var/www/html
+      - /home/bigchacha/portfolio:/var/www/html
     restart: unless-stopped
     env_file: .env
     healthcheck:
