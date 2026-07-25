@@ -12,6 +12,9 @@
 
 - name: Install docker
   hosts: all
+  vars:
+    docker_users:
+      - "{{ ansible_user }}"
   roles:
     - geerlingguy.docker
 

@@ -24,7 +24,7 @@ services:
     container_name: portainer_adguard_agent
     restart: unless-stopped
     ports:
-      - 9001:9001
+      - "{{ ansible_default_ipv4.address }}:9001:9001"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
