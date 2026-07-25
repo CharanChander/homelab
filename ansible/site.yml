@@ -1,17 +1,14 @@
 # site.yml
 ---
-- name: Configure rh-base on all hosts
-  hosts: all
-  roles:
-    - bertvv.rh-base
-
 - name: Update all packages
   hosts: all
+  become: true
   tasks:
-    - name: Update all packages
-      ansible.builtin.dnf:
-        name: '*'
-        state: latest
+    - name: Update apt cache and upgrade all packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        cache_valid_time: 3600
 
 - name: Install docker
   hosts: all
@@ -44,7 +41,6 @@
         mode: '0644'
       when: inventory_hostname == "websites"
 
-
 - name: Add user to docker group
   hosts: all
   become: true
@@ -71,7 +67,6 @@
           value: "7340032"
         - name: net.core.wmem_max
           value: "7340032"
-
 
 - name: Execute docker compose
   hosts: all

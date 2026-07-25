@@ -1,8 +1,18 @@
 :root { --primary: #000000; --dark: #000815; --teal: #569290; --bg: #F1F5FF; --base: #F4F4F4; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "DM Sans", -apple-system, sans-serif; color: #121212; line-height: 1.6; background: #fff; }
+body { font-family: "DM Sans", -apple-system, sans-serif; color: #121212; line-height: 1.6; background: #fff; padding-top: 137px;}
 
-header { background: var(--primary); padding: 24px 20px; }
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #000;
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
 header img { max-height: 60px; display: block; }
 
 .hero { background: #000; padding: 60px 20px; }
