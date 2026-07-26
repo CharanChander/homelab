@@ -119,8 +119,10 @@
       <p>IBAN: BE87 7390 2352 2194</p>
       <p>Deze onderneming valt onder de vrijstellingsregeling van kleine ondernemingen. BTW niet van toepassing.</p>
     </div>
-  </div>
+    <div>
+      <h3>Status pagina</h3>
+      <a href="https://uptime.cc-it-solutions.be/status/cc-it-solutions" target="_blank" rel="noopener">Status</a>
+    </div>
 </footer>
-
 </body>
 </html>
