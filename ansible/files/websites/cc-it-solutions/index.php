@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CC-IT-Solutions – Making IT happen</title>
-<meta name="description" content="CC-IT-Solutions: IT-oplossingen voor particulieren en zelfstandigen in Gent.">
+<meta name="description" content="CC-IT-Solutions: IT-oplossingen voor particulieren en zelfstandigen">
 <link rel="stylesheet" href="style.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-79E4C2GD2P"></script>
 <script>
@@ -18,7 +18,7 @@
 <body>
 
 <header>
-  <img src="img/logo.png" alt="CC-IT-Solutions">
+  <img src="img/icon.png" alt="CC-IT-Solutions">
 </header>
 
 <section class="hero">
@@ -27,7 +27,7 @@
       <h1>Making IT happen</h1>
     </div>
     <div class="hero-img">
-      <img src="img/banner.jpg" alt="">
+      <img src="img/banner.png" alt="">
     </div>
   </div>
 </section>
@@ -41,12 +41,12 @@
       <p>Met moderne UniFi technologie zorg ik er voor dat u snel en betrouwbaar verbonden bent.</p>
     </div>
     <div class="service">
-      <img src="img/question.png" alt="Advies">
+      <img src="img/vraagteken.png" alt="Advies">
       <h3>Advies</h3>
       <p>Niet zeker wat de beste volgende stap is? Ik help u met al uw vragen.</p>
     </div>
     <div class="service">
-      <img src="img/maintenance.png" alt="Onderhoud en herstel">
+      <img src="img/schroevendraaier.png" alt="Onderhoud en herstel">
       <h3>Onderhoud en herstel</h3>
       <p>Loopt uw computer trager dan normaal? Ik breng hem terug tot leven.</p>
     </div>
@@ -57,7 +57,7 @@
   <h2>Over mij</h2>
   <div class="about">
     <div class="about-img">
-      <img src="img/photo.jpg" alt="Charan Chander">
+      <img src="img/koffiemok.jpg" alt="Charan Chander">
     </div>
     <div class="about-text">
       <p>Mijn naam is Charan, ik ben een gedreven informaticus met een passie voor systeem en netwerkbeheer, afgestudeerd aan HOGENT.</p>
@@ -123,6 +123,7 @@
       <h3>Status pagina</h3>
       <a href="https://uptime.cc-it-solutions.be/status/cc-it-solutions" target="_blank" rel="noopener">Status</a>
     </div>
+  </div>
 </footer>
 </body>
 </html>
