@@ -1,8 +1,6 @@
 # group_vars/all.yml
 # Variables visible to all nodes
 ---
-rhbase_automatic_updates: true
-
 docker_add_repo: true
 
 docker_obsolete_packages:

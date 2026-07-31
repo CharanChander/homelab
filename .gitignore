@@ -3,3 +3,4 @@ ansible/inventory.yml
 .DS_Store
 .vscode
 notes.md
+ansible/files/templates/init-db.sql.j2

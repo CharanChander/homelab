@@ -62,24 +62,6 @@
         group: bigchacha
         mode: "0600"
 
-    - name: Copy cc-it-solutions site files
-      ansible.builtin.copy:
-        src: files/websites/cc-it-solutions/
-        dest: /home/bigchacha/cc-it-solutions/
-        owner: bigchacha
-        group: bigchacha
-        mode: '0644'
-      when: inventory_hostname == "websites"
-
-    - name: Copy portfolio site files
-      ansible.builtin.copy:
-        src: files/websites/portfolio/
-        dest: /home/bigchacha/portfolio/
-        owner: bigchacha
-        group: bigchacha
-        mode: '0644'
-      when: inventory_hostname == "websites"
-
 - name: Add user to docker group
   hosts: all
   become: true

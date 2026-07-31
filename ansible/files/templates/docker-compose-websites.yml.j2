@@ -1,54 +1,87 @@
 services:
-  cc-it-solutions:
-    image: php:apache
-    container_name: cc-it-solutions
+  db:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=mysql_native_password'
     volumes:
-      - /home/bigchacha/cc-it-solutions:/var/www/html
+      - db_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     restart: unless-stopped
-    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    expose:
+      - 3306
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 30s
       timeout: 5s
       retries: 3
     security_opt:
       - no-new-privileges:true
-  
-  portfolio:
-    image: php:apache
-    container_name: portfolio
+
+  wordpress-cc-it-solutions:
+    image: wordpress:latest
     volumes:
-      - /home/bigchacha/portfolio:/var/www/html
+      - wp_data:/var/www/html
     restart: unless-stopped
-    env_file: .env
+    depends_on: [db]
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=${CC_IT_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${CC_IT_DB_PASSWORD}
+      - WORDPRESS_DB_NAME=cc_it_solutions
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:80 || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
     security_opt:
-        - no-new-privileges:true
+      - no-new-privileges:true
+    ports:
+      - 80:80
+
+  wordpress-charan-chander-portfolio:
+    image: wordpress:latest
+    volumes:
+      - wp_charanchander_portfolio_data:/var/www/html
+    restart: unless-stopped
+    depends_on: [db]
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=${PORTFOLIO_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${PORTFOLIO_DB_PASSWORD}
+      - WORDPRESS_DB_NAME=portfolio
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 81:80
 
   portainer-agent:
     image: portainer/agent:latest
     container_name: portainer_websites_agent
     restart: unless-stopped
     ports:
-      - "{{ ansible_default_ipv4.address }}:9001:9001"
+      - 9001:9001
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9001 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     security_opt:
       - no-new-privileges:true
-  
+
   watchtower:
     image: beatkind/watchtower:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
-    environment:
-      - WATCHTOWER_SCHEDULE=0 0 3 * * *
-      - WATCHTOWER_CLEANUP=true
     security_opt:
       - no-new-privileges:true
 
@@ -67,3 +100,8 @@ services:
     command: ${CLOUDFLARE_TUNNEL_PORTFOLIO}
     security_opt:
       - no-new-privileges:true
+
+volumes:
+  db_data:
+  wp_data:
+  wp_charanchander_portfolio_data:
